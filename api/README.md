@@ -1,7 +1,7 @@
 # API
 
 The API package contains code that can be shared among multiple projects that are involved 
-in serving or consuming any public or internal Redpanda API. Redpanda uses connectrpc
+in serving or consuming any public or internal API. Uses connectrpc
 and therefore this project is heavily built around that.
 
 ## Package errors
@@ -14,12 +14,12 @@ as well as a helper for writing connect.Errors via HTTP.
 ```go
 err := apierrors.NewConnectError(
 	connect.CodeUnimplemented,
-	errors.New("the redpanda admin api must be configured to use this endpoint"),
+	errors.New("the admin api must be configured to use this endpoint"),
 	apierrors.NewErrorInfo(
             apierrors.DomainDataplane,
             v1alpha1.Reason_REASON_FEATURE_NOT_CONFIGURED.String(),
         ),
-	apierrors.NewHelp(apierrors.NewHelpLink("Redpanda Console Configuration Reference", "https://docs.redpanda.com/current/reference/console/config/")),
+	apierrors.NewHelp(apierrors.NewHelpLink("Console Configuration Reference", "")),
 )
 ```
 
@@ -53,7 +53,7 @@ interceptor, so that it can gather information at both stages of the request lif
 This can be useful for access logs and monitoring.
 
 ```go
-observerInterceptor := redpandainterceptor.NewObserver(func(_ context.Context, rm *redpandainterceptor.RequestMetadata) {
+observerInterceptor := interceptor.NewObserver(func(_ context.Context, rm *interceptor.RequestMetadata) {
     api.Logger.Info("",
         zap.String("duration", rm.Duration().String()),
         zap.String("procedure", rm.Procedure()),
@@ -78,7 +78,7 @@ It works alongside the observerInterceptor that is implemented as part of the in
 ```go
 apiProm, err := metrics.NewPrometheus(
     metrics.WithRegistry(prometheus.DefaultRegisterer),
-    metrics.WithDynamicLabel("test", func(ctx context.Context, metadata *redpandainterceptor.RequestMetadata) string {
+    metrics.WithDynamicLabel("test", func(ctx context.Context, metadata *interceptor.RequestMetadata) string {
         return "val"
     }),
 )
@@ -87,7 +87,7 @@ if err != nil {
 }
 
 // Mount observer interceptor before
-observerInterceptor := redpandainterceptor.NewObserver(apiProm.ObserverAdapter())
+observerInterceptor := interceptor.NewObserver(apiProm.ObserverAdapter())
 
 // You must mount both HTTP middleware and connectrpc interceptors
 r.Use(observerInterceptor.WrapHandler)
@@ -96,7 +96,7 @@ userSvcPath, userSvcHandler := dataplanev1alpha1connect.NewUserServiceHandler(us
 
 ## Package pagination
 
-The package pagination provides functions for handling paginated Redpanda API
+The package pagination provides functions for handling paginated API
 responses on the server-side.
 
 **Serving paginated responses**
