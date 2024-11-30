@@ -1,13 +1,6 @@
-# Redpanda Common Go Repository
+# Common Go Repository
 
-Welcome to the Redpanda Common Go Repository! This repository serves as a hub 
-for sharing code across various Redpanda code bases. While the community 
-is welcome to utilize the code herein, please note that we do not offer 
-any guarantees, support, or consider feature requests.
-
-This repository is used to share code between different Redpanda code bases.
-It may be used by the community, but we do not provide any guarantees, support
-and won't consider any feature requests.
+Common Go Repository to be used for various projects 
 
 ## API Module
 
@@ -26,6 +19,6 @@ URL addresses.
 
 The `secrets` module contains code to access cloud provider secrets.
 
-## Radpanda Admin Client Module
+## Admin Client Module
 
-The `rpadmin` module is Redpanda [Admin API](https://docs.redpanda.com/api/admin-api/) client.
+The `rpadmin` module is admin client.
